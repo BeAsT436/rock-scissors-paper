@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
+    />
+    <title>Гра "Камінь, ножиці, папір"</title>
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        text-align: center;
+        background-color: #f8f8f8;
+        display: flex;
+        height: 100vh;
+        justify-content: center;
+        align-items: center;
+        margin: 0;
+        padding: 0;
+      }
+
+      .container {
+        max-width: 600px;
+        margin: 20px auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+
+      h1 {
+        color: #333;
+        margin-bottom: 20px;
+      }
+
+      button {
+        font-size: 40px;
+        padding: 10px 20px;
+        margin: 10px;
+        cursor: pointer;
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+      }
+
+      button:hover {
+        background-color: #45a049;
+      }
+
+      #result {
+        font-size: 18px;
+        margin-top: 20px;
+        color: #333333;
+      }
+
+      #score {
+        font-size: 16px;
+        margin-top: 10px;
+        color: #555;
+      }
+
+      button:not(:last-child) {
+        margin-right: 10px;
+      }
+
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        position: relative;
+      }
+      #rock:disabled,#scissors:disabled,#paper:disabled{
+        cursor: not-allowed;
+        background-color: #555;
+      }
+      #reset{
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 20px;
+        height: 20px;
+        font-size: 10px;
+        padding: 1px;
+        background-color: red;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Гра "Камінь, ножиці, папір"</h1>
+
+      <button id="rock"><i class="fas fa-hand-rock"></i></button>
+      <button id="scissors"><i class="fas fa-hand-scissors"></i></button>
+      <button id="paper"><i class="fas fa-hand-paper"></i></button>
+      <button id="reset">X</button>
+
+      <div id="result"></div>
+      <div id="score"></div>
+    </div>
+
+    <script>
+      // Game state variables
+      let playerScore = 0;
+      let computerScore = 0;
+
+      // DOM element references
+      const resultElement = document.getElementById("result");
+      const scoreElement = document.getElementById("score");
+      const rockBtn = document.getElementById("rock");
+      const scissorsBtn = document.getElementById("scissors");
+      const paperBtn = document.getElementById("paper");
+      const resetBtn = document.getElementById("reset")
+
+      // Event listeners for button clicks
+      rockBtn.addEventListener("click", () => handleBtnClick("rock"));
+      scissorsBtn.addEventListener("click", () => handleBtnClick("scissors"));
+      paperBtn.addEventListener("click", () => handleBtnClick("paper"));
+      resetBtn.addEventListener("click", resetGame)
+
+      // Function to handle button clicks
+      function handleBtnClick(choice) {
+        playGame(choice);
+      }
+
+      // Game logic functions
+      function playGame(playerChoice) {
+        const choices = ["rock", "scissors", "paper"];
+        const computerChoice = choices[Math.floor(Math.random() * 3)];
+
+        const result = getWinner(playerChoice, computerChoice);
+
+        displayScore(playerChoice, computerChoice, result);
+
+        updateResult(result);
+        if (playerScore === 10 || computerScore === 10) {
+          displayWinner();
+        }
+      }
+
+      function getWinner(player, computer) {
+        if (player === computer) {
+          return "tie";
+        } else if (
+          (player === "rock" && computer === "scissors") ||
+          (player === "scissors" && computer === "paper") ||
+          (player === "paper" && computer === "rock")
+        ) {
+          return "win";
+        } else {
+          return "lose";
+        }
+      }
+
+      function displayScore(player, computer, result) {
+        let resultMessage;
+        if (result === "win") {
+          resultMessage = `You win! ${player} winner is ${computer}.`;
+        } else if (result === "lose") {
+          resultMessage = `You lose. ${computer} winner is ${player}.`;
+        } else {
+          resultMessage = `tie! both took the same ${player}.`;
+        }
+
+        resultElement.textContent = resultMessage;
+      }
+
+      function updateResult(result) {
+        if (result === "win") {
+          playerScore++;
+        } else if (result === "lose") {
+          computerScore++;
+        }
+
+        showScore();
+      }
+
+      function showScore() {
+        scoreElement.textContent = `score: player ${playerScore}, computer ${computerScore}`;
+      }
+
+      function displayWinner() {
+        const message =
+          playerScore === 10
+            ? "congratulations you are the winner!"
+            : "sorry the computer is the winner!";
+        resultElement.textContent = message
+        resultElement.style.color = "lightgreen"
+
+         rockBtn.disabled = true
+         paperBtn.disabled = true
+         scissorsBtn.disabled = true
+      }
+
+      function resetGame() {
+        playerScore = 0
+        computerScore = 0
+        rockBtn.disabled = false
+        paperBtn.disabled = false
+        scissorsBtn.disabled = false
+        resultElement.textContent = ""
+        resultElement.style.color = "black"
+        scoreElement.textContent = ""
+      }
+    </script>
+  </body>
+</html>
